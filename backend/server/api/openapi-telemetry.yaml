@@ -1,0 +1,175 @@
+openapi: 3.0.0
+info:
+  contact:
+    email: drone-derby-eng-team@google.com
+    name: Drone Derby Eng Team
+  description: Drone Telemetry API
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  title: Drone-Telemetry-API
+  version: "1.0"
+servers:
+- url: http://localhost:8081
+paths:
+  /diag/drone:
+    get:
+      operationId: get-diag-drone
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DroneStatus'
+          description: OK
+      summary: GET Drone Status
+      tags: []
+  /diag/operations:
+    get:
+      operationId: get-diag-operations
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Operations'
+          description: OK
+      summary: GET Operations Details
+      tags: []
+  /diag/coral:
+    get:
+      operationId: get-diag-coral
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CoralStatus'
+          description: OK
+      summary: GET Coral board status
+      tags: []
+components:
+  examples: {}
+  schemas:
+    CoralStatus:
+      example:
+        memory: 60
+        cpu: 8
+        additionalProperties:
+        - value: value
+          key: key
+        - value: value
+          key: key
+        version: version
+        uptime: uptime
+      properties:
+        uptime:
+          minLength: 0
+          type: string
+        version:
+          type: string
+        cpu:
+          maximum: 100
+          minimum: 0
+          type: integer
+        memory:
+          maximum: 100
+          minimum: 0
+          type: integer
+        additionalProperties:
+          items:
+            $ref: '#/components/schemas/CoralStatus_additionalProperties_inner'
+          type: array
+      title: CoralStatus
+      type: object
+      x-stoplight:
+        id: xfmnfb4vkpvoz
+    DroneStatus:
+      example:
+        macAddress: macAddress
+        additionalProperties:
+        - value: value
+          key: key
+        - value: value
+          key: key
+        battery: 8
+        version: version
+        status: Connected
+      properties:
+        macAddress:
+          type: string
+        status:
+          enum:
+          - Connected
+          - DIsconneced
+          - Pairing
+          - Unknown
+          type: string
+        version:
+          type: string
+        battery:
+          format: int32
+          maximum: 100
+          minimum: 0
+          type: integer
+        additionalProperties:
+          items:
+            $ref: '#/components/schemas/CoralStatus_additionalProperties_inner'
+          type: array
+      title: DroneStatus
+      type: object
+      x-stoplight:
+        id: vgvhzprl8ihpm
+    Logs:
+      example:
+        date: 2000-01-23T04:56:07.000+00:00
+        level: level
+        message: message
+      properties:
+        message:
+          type: string
+        date:
+          format: date-time
+          type: string
+        level:
+          type: string
+      title: Logs
+      type: object
+      x-stoplight:
+        id: xw9o6zn03zg79
+    Operations:
+      example:
+        logging:
+        - date: 2000-01-23T04:56:07.000+00:00
+          level: level
+          message: message
+        - date: 2000-01-23T04:56:07.000+00:00
+          level: level
+          message: message
+        SLOs: SLOs
+        monitoring: monitoring
+      properties:
+        logging:
+          items:
+            $ref: '#/components/schemas/Logs'
+          type: array
+        monitoring:
+          type: string
+        SLOs:
+          type: string
+      title: Operations
+      type: object
+      x-stoplight:
+        id: rne5usd4ku7jd
+    CoralStatus_additionalProperties_inner:
+      example:
+        value: value
+        key: key
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+      type: object
+x-stoplight:
+  id: 9hw3de86jnk19

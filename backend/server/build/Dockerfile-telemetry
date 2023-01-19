@@ -1,0 +1,25 @@
+FROM golang:1.19-buster AS build
+ARG BASE_GO_PATH=/go/src/app
+ARG BASE_PATH=${BASE_GO_PATH}/backend/server
+WORKDIR ${BASE_GO_PATH}
+
+COPY  . .
+WORKDIR ${BASE_PATH}
+RUN go mod download
+
+
+# Change into the directory of the app we are building
+WORKDIR ${BASE_PATH}/cmd/telemetry
+ENV CGO_ENABLED=0
+RUN go build  -a -installsuffix cgo -o drone-derby-server-telemetry .
+
+FROM scratch AS runtime
+ARG BASE_GO_PATH=/go/src/app
+ARG BASE_PATH=${BASE_GO_PATH}/backend/server
+COPY --from=build ${BASE_PATH}/cmd/telemetry/drone-derby-server-telemetry ./
+
+#Copy web content : swagger UI
+COPY --from=build ${BASE_PATH}/web ./web
+COPY --from=build ${BASE_PATH}/api/openapi-telemetry.yaml ./web/swaggerui/openapi.yaml
+EXPOSE 8080
+CMD ["./drone-derby-server-telemetry"]

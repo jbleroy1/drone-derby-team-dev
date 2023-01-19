@@ -1,0 +1,263 @@
+openapi: 3.0.0
+info:
+  contact:
+    email: drone-derby-eng-team@google.com
+    name: Drone Derby Eng Team
+  description: Drone Command API
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  title: Drone-Command-API
+  version: "1.0"
+servers:
+- url: http://localhost:8080
+paths:
+  /sign:
+    get:
+      description: ""
+      operationId: get-sign
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SignMapping'
+                type: array
+          description: OK
+      summary: GET all SignMapping object
+      tags: []
+  /sign/{id}:
+    delete:
+      operationId: delete-sign-id
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          description: OK
+        "404":
+          description: Not Found
+      summary: DELETE SignMapping
+    get:
+      operationId: get-sign-id
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignMapping'
+          description: OK
+        "404":
+          description: Not Found
+      summary: GET SignMapping By ID
+      tags: []
+    post:
+      operationId: post-sign-id
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignMapping'
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignMapping'
+          description: Created
+      summary: CREATE SignMapping
+    put:
+      operationId: put-sign-id
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignMapping'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignMapping'
+          description: OK
+        "404":
+          description: Not Found
+      summary: UPDATE SignMapping
+  /control:
+    post:
+      operationId: post-control
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FlightControl'
+      responses:
+        "200":
+          description: OK
+      summary: POST Control order to send to the coral board
+components:
+  examples: {}
+  schemas:
+    Altitude:
+      example:
+        value: 1
+        way: UP
+      properties:
+        value:
+          format: int32
+          type: integer
+        way:
+          enum:
+          - UP
+          - DOWN
+          type: string
+      title: Altitude
+      type: object
+      x-stoplight:
+        id: e3j10dgnwmjfa
+      x-examples:
+        Example 1:
+          value: 12
+          way: UP
+    Command:
+      properties:
+        id:
+          type: string
+      title: Command
+      type: object
+      x-stoplight:
+        id: 9v3lpzt3gouej
+    Direction:
+      example:
+        angle: 216
+        way: left
+      properties:
+        angle:
+          maximum: 360
+          minimum: 0
+          type: integer
+        way:
+          enum:
+          - left
+          - right
+          - straight
+          type: string
+      required:
+      - angle
+      - way
+      title: Direction
+      type: object
+      x-stoplight:
+        id: 8gz5ms5omp4k8
+    FlightControl:
+      example:
+        date: 2000-01-23T04:56:07.000+00:00
+        action: takeOff
+        direction:
+          angle: 216
+          way: left
+      properties:
+        direction:
+          $ref: '#/components/schemas/Direction'
+        action:
+          enum:
+          - takeOff
+          - Stop
+          - Land
+          type: string
+        date:
+          format: date-time
+          type: string
+      required:
+      - action
+      - direction
+      title: FlightControl
+      type: object
+      x-stoplight:
+        id: om5y9klk29wif
+    SignMapping:
+      example:
+        altitude:
+          value: 1
+          way: UP
+        imageUrl: imageUrl
+        description: description
+        updateTime: updateTime
+        id: 0
+        nextAction: continue
+        creationDate: creationDate
+        speed: slow
+        direction:
+          angle: 216
+          way: left
+      properties:
+        id:
+          type: string
+        direction:
+          $ref: '#/components/schemas/Direction'
+        altitude:
+          $ref: '#/components/schemas/Altitude'
+        speed:
+          enum:
+          - slow
+          - fast
+          - medium
+          type: string
+        nextAction:
+          enum:
+          - continue
+          - stop
+          type: string
+        imageUrl:
+          type: string
+        description:
+          type: string
+        creationDate:
+          format: time
+          type: string
+        updateTime:
+          format: time
+          type: string
+      required:
+      - altitude
+      - direction
+      - imageUrl
+      - nextAction
+      - speed
+      title: SignMapping
+      type: object
+      x-stoplight:
+        id: aeumdy1zv7fxu
+      x-examples: {}
+x-stoplight:
+  id: 9hw3de86jnk19

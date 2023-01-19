@@ -1,0 +1,13 @@
+api/openapi.yaml
+pkg/openapi-command/api.go
+pkg/openapi-command/api_default.go
+pkg/openapi-command/api_default_service.go
+pkg/openapi-command/error.go
+pkg/openapi-command/helpers.go
+pkg/openapi-command/impl.go
+pkg/openapi-command/model_altitude.go
+pkg/openapi-command/model_command.go
+pkg/openapi-command/model_direction.go
+pkg/openapi-command/model_flight_control.go
+pkg/openapi-command/model_sign_mapping.go
+pkg/openapi-command/routers.go

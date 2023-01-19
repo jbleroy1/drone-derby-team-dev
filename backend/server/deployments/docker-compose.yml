@@ -1,0 +1,77 @@
+services:
+  drone-derby-server-command:
+    build:
+      context: ../../../
+      dockerfile: ./backend/server/build/Dockerfile-command
+      tags:
+      - drone-derby-server-command
+    ports:
+      - "8080:8080"
+    environment:
+      FIRESTORE_EMULATOR_HOST: firestore-emulator:8181
+      SWAGGER_UI_ENABLED: true
+      ENV: DEV
+      PROJECT_ID: "meta-yen-311209"
+      PUBSUB_TOPIC_ID: "HOST_CMD"
+      PUBSUB_PROJECT_ID: "meta-yen-311209"
+      PUBSUB_EMULATOR_HOST: "pubsub-emulator:8282"
+      CREATE_TOPIC_ID: "true"
+    depends_on:
+      firestore-emulator:
+        condition: service_healthy
+      pubsub-emulator:
+        condition: service_healthy
+  drone-derby-server-telemetry:
+    build:
+      context: ../../../
+      dockerfile: ./backend/server/build/Dockerfile-telemetry
+      tags:
+      - drone-derby-server-telemetry
+    ports:
+    - "8081:8080"
+    environment:
+      FIRESTORE_EMULATOR_HOST: firestore-emulator:8181
+      SWAGGER_UI_ENABLED: true
+      ENV: DEV
+      PROJECT_ID: "set a project ID"
+
+    depends_on:
+      firestore-emulator:
+        condition: service_healthy
+  firestore-emulator:
+    image: google/cloud-sdk
+    container_name: firestore-emulator
+    command:
+    - gcloud
+    - beta
+    - emulators
+    - firestore
+    - start
+    - --host-port=0.0.0.0:8181
+    ports:
+    - "8181:8181"
+    healthcheck:
+      test: curl --fail http://127.0.0.1:8181 || exit 1
+      interval: 10s
+      retries: 10
+      start_period: 20s
+      timeout: 10s
+  pubsub-emulator:
+    image: google/cloud-sdk
+    container_name: PUBSUB_EMULATOR_HOST
+    command:
+    - gcloud
+    - beta
+    - emulators
+    - pubsub
+    - start
+    - --host-port=0.0.0.0:8282
+    ports:
+    - "8282:8282"
+    healthcheck:
+      test: curl --fail http://127.0.0.1:8282 || exit 1
+      interval: 10s
+      retries: 10
+      start_period: 20s
+      timeout: 10s
+
